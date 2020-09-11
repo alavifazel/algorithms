@@ -40,8 +40,8 @@ int UnionRoot(Union *u, int i) {
 		return -1;	
 	}
 	while(i != u->id[i]) {
-		// bellow code does not flattens (compresses) the tree completely.
-		// it merely makes the node to point to it's grandparent,
+		// bellow code does not flatten (compresses) the tree completely.
+		// it merely makes the node to point to it's grandparent;
 		// but in practice it is almost as good as flattening the whole tree completely.
 		u->id[i] = u->id[u->id[i]]; 
 		i = u->id[i];
