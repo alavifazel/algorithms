@@ -16,7 +16,7 @@ typedef struct {
 	int maxSize;
 } Union;
 
-void InitUnion(Union *u, int maxSize) {
+void union_init(Union *u, int maxSize) {
 	int *id = (int*) malloc(sizeof(int) * maxSize); 	
 	int *depth_level = (int*) malloc(sizeof(int) * maxSize); 	
 	for(int i = 0; i < maxSize; ++i) {
@@ -28,13 +28,13 @@ void InitUnion(Union *u, int maxSize) {
 	u->maxSize = maxSize;
 }
 
-void UnionFree(Union *u) {
+void union_free(Union *u) {
 	free(u->id);
 	free(u->depth_level);
 	u->maxSize = 0;
 }
 
-int UnionRoot(Union *u, int i) {
+int union_root(Union *u, int i) {
 	if(i > u->maxSize) {
 		fprintf(stderr, "Node number is exceeding the union's number of nodes!");
 		return -1;	
@@ -49,22 +49,22 @@ int UnionRoot(Union *u, int i) {
 	return i;
 }
 
-bool UnionIsConnected(Union *u, int a, int b) {
-	if(UnionRoot(u,a) == UnionRoot(u,b)) return true;
+bool union_is_connected(Union *u, int a, int b) {
+	if(union_root(u,a) == union_root(u,b)) return true;
 	else return false;
 }
 
-void UnionConnect(Union *u, int a, int b) {
+void union_connect(Union *u, int a, int b) {
 	if(u->depth_level[a] > u->depth_level[b]) {
-		u->id[b] = UnionRoot(u, a);
+		u->id[b] = union_root(u, a);
 		u->depth_level[a] += u->depth_level[b]; 
 	} else {
-		u->id[a] = UnionRoot(u, b);
+		u->id[a] = union_root(u, b);
 		u->depth_level[b] += u->depth_level[a]; 
 	}
 }
 
-void UnionPrint(Union *u) {
+void union_print(Union *u) {
 	printf("\n");
 	printf("  i   : ");
 	for(int i = 0; i < u->maxSize; ++i) {
@@ -80,20 +80,20 @@ void UnionPrint(Union *u) {
 
 int main(){
 	Union u;
-	InitUnion(&u, 10);
-	UnionPrint(&u);
+	union_init(&u, 10);
+	union_print(&u);
 
-	UnionConnect(&u,4,3);
-	UnionPrint(&u);
+	union_connect(&u,4,3);
+	union_print(&u);
 
-	UnionConnect(&u,5,3);
-	UnionPrint(&u);
+	union_connect(&u,5,3);
+	union_print(&u);
 
-	UnionConnect(&u,1,5);
-	UnionPrint(&u);
+	union_connect(&u,1,5);
+	union_print(&u);
 
-	printf("%d\n", UnionIsConnected(&u,1,4)); // true!
+	printf("%d\n", union_is_connected(&u,1,4)); // true!
 
-	UnionFree(&u);
+	union_free(&u);
 	return 0;
 }
