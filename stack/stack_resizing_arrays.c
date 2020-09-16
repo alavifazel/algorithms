@@ -1,3 +1,13 @@
+/*
+ * > Resizing array implementation of stack
+ *
+ * Description: Lookups take a constant time but pushing and poping element takes N steps in the worst case (when doubling and halving).
+ * However the "Amortized" analysis of this algorithm is O(1).
+ * To have guarantee for relatively fast insertion/deletion use linked-list implementaiton.
+ * But on average general resizing array is faster.
+ *
+*/
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdbool.h>
@@ -16,7 +26,6 @@ void StackInit(Stack *s, int initialCapacity){
 		memset(s->data, 0, s->capacity);
 	} else {
 	        fprintf(stderr, "Initial capacity should be positive!\n");
-		
 	}
 }
 

@@ -1,7 +1,10 @@
 /*
  * > Linked-list stack implementation
- *   ( 
- */
+ * Description: 
+ * 	Every operation in this algorithm uses a constant time in the worst case;
+ * 	but it uses extra time and space versus resizing array implementation.
+*/
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdbool.h>
