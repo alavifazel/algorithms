@@ -25,12 +25,14 @@ void StackInit(Stack *s) {
 	s->size = 0;
 }
 
-void StackPop(Stack *s) {
+int StackPop(Stack *s) {
+	int tmp = s->node->data;
 	Node *new_node = s->node->next_node;
-	int new_node_data = s->node->next_node->data;
 	free(s->node);
 	s->node = new_node;
 	s->size--;
+	
+	return tmp;
 }
 
 void StackFree(Stack *s) {
@@ -47,22 +49,20 @@ void StackPush(Stack *s, int data) {
 }
 
 bool StackIsEmpty(Stack *s) {
-	return s->size == 1; 
+	return s->size == 0; 
 }
 
 int main() { 
 	Stack s;
 	StackInit(&s);
+
 	StackPush(&s, 400);
 	StackPush(&s, 42);
 	StackPush(&s, 123123);
-	printf("%d\n", s.node->data);
 
-	StackPop(&s);
-	printf("%d\n", s.node->data);	
-
-	StackPop(&s);
-	printf("%d\n", s.node->data);	
+	printf("%d\n", StackPop(&s));
+	printf("%d\n", StackPop(&s));	
+	printf("%d\n", StackPop(&s));	
 	
 	StackFree(&s);
 }
