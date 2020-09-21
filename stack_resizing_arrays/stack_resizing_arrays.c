@@ -1,10 +1,10 @@
 /*
  * > Resizing array implementation of stack
  *
- * Description: Lookups take a constant time but pushing and poping element takes N steps in the worst case (when doubling and halving).
+ * Description: Lookups take a constant time but pushing and popping element takes N steps in the worst case (when doubling and halving).
  * However the "Amortized" analysis of this algorithm is O(1).
  * To have guarantee for relatively fast insertion/deletion use linked-list implementaiton.
- * But on average general resizing array is faster.
+ * But in general resizing array is faster.
  *
 */
 

@@ -6,9 +6,9 @@
  * 	Best case:
  * 		If the array is sorted in ascending order, it takes N-1 steps to sort the array.
  *	Worst case:
- *		If the array is in descending order, it takes N^2/2 steps to sort the array (bottom half of a square matrix number of exchanges).
+ *		If the array is in descending order, it takes N^2/2 steps to sort the array (bottom half of a square matrix which indicates the exchanges we make).
  *	Average:
- *		But for an array with randomly set elements, it takes in average, N^2/4 steps to sort the array (half of the bottom half of a square matrix of number of exchanges).
+ *		For an array with randomly set elements, it takes on average N^2/4 steps to sort the array (half of the bottom half, of the square matrix).
  * 
  */
 
