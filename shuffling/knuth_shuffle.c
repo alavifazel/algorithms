@@ -30,9 +30,6 @@ void shuffle(void *arr, size_t nmemb, size_t size) {
     } 
 }
 
-void print_array(void *arr, int size) {
-}
-
 int main() {
     srand(time(NULL)); 
     
