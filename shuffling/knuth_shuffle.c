@@ -16,13 +16,15 @@ void swap(void *arr, size_t nmemb, int a, int b) {
     memcpy(tmp, arr + a*nmemb, nmemb);
     memcpy(arr + a*nmemb, arr + b*nmemb, nmemb);
     memcpy(arr + b*nmemb, tmp, nmemb);
+
+    free(tmp);
 }
 
 int rand_range_int(int min, int max) {
     return min + (int)(max * (rand() / (RAND_MAX+1.0)));
 }
 
-// Generic Knuth shuffle implementation that can work on array of objects with different types.
+// Generic Knuth shuffle implementation that can work on array of objects with any type.
 void shuffle(void *arr, size_t nmemb, size_t size) {
     for(int i = 0; i < size; ++i) {
         int tmp = rand_range_int(0, i + 1);
