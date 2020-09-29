@@ -1,15 +1,3 @@
-/*
- * This implementation uses generic binary heap implementation using void* type.
- * This approach initially worked on different types but it has limitations, notably it only works on pointers,
- * so you can't pass primitive types directly to the insert function.
- * For example:
- *   binary_heap p;
- *   binary_heap_init(&p, 10, sizeof(int), compare);
- *   binary_heap_insert(&p, 4); // Error
- *
- * To overcome this limitation, we generate functions with preprocessors for the specific types we want.
- */
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>

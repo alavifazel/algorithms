@@ -1,6 +1,11 @@
 #include "binary_heap_impl.h"
+#include <assert.h>
+#include <stdio.h>
 
 void binary_heap_init(binary_heap *p, size_t capacity, size_t nmemb, bool (*compar)(const void*,const void*) ) {
+    assert((sizeof(char) != sizeof(int)) &&
+           (sizeof(int) != sizeof(double) &&
+            sizeof(char) != sizeof(double)));
     p->arr = malloc((capacity+1) * sizeof(nmemb));
     p->nmemb = nmemb;
     p->compar = compar;
