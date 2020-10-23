@@ -26,6 +26,10 @@ shared_ptr<typename BST<Key,Value>::Node> BST<Key,Value>::put(shared_ptr<typenam
     // The following code recursively increases the count variable of the nodes (from bottom up)
     x->count = 1 + size(x->left) + size(x->right);
     
+    if(isRed(x->right) && !isRed(x->left))	x = rotateLeft(x);
+    if(isRed(x->left) && isRed(x->left->left))	x = rotateRight(x);
+    if(isRed(x->left) && !isRed(x->right)) 	flipColor(x);
+
     return x;
 }
 
@@ -157,59 +161,45 @@ void BST<Key,Value>::inorder_traversal(shared_ptr<Node> x, queue<Key> &q) {
     inorder_traversal(x->right, q);
 }
 
-// del operations impl
-template <typename Key, typename Value>
-void BST<Key,Value>::delMininum() {
-    root = delMininum(root); // Retrieves the new root and assigns it to 'root' member variable
-}
+// Red-black BST operations
 
 template <typename Key, typename Value>
-void BST<Key,Value>::delMaximum() {
-    root = delMaximum(root); 
-}
-
-template <typename Key, typename Value>
-shared_ptr<typename BST<Key,Value>::Node>
-BST<Key,Value>::delMininum(shared_ptr<Node> x) {
-    if(x == nullptr) return x->right;
-    x->left = delMininum(x->left);
-
-    // Updates the size counts from bottom up (because it get's called when the above recursion hits the base case)
-    x->count = 1 + size(x->left) + size(x->right);
-    return x; 
+bool BST<Key,Value>::isRed(shared_ptr<Node> x) {
+    if(x == nullptr) return false;
+    return x->color == RED;
 }
 
 template <typename Key, typename Value>
 shared_ptr<typename BST<Key,Value>::Node>
-BST<Key,Value>::delMaximum(shared_ptr<Node> x) {
-    if(x == nullptr) return x->left;
-    x->right = delMininum(x->right);
-
-    x->count = 1 + size(x->left) + size(x->right);
-    return x; 
-}
-
-template <typename Key, typename Value>
-void BST<Key,Value>::delNode(Key key) {
-    root = delNode(root, key);
+BST<Key,Value>::rotateLeft(shared_ptr<Node> x) {
+    // Takes a node that has red link on it's right side
+    auto r = x->right;
+    x->right = r->left;
+    r->left = x;
+    r->color = x->color;
+    x->color = RED;
+    return r;
 }
 
 template <typename Key, typename Value>
 shared_ptr<typename BST<Key,Value>::Node>
-BST<Key,Value>::delNode(shared_ptr<Node> x, Key key) {
-    if(x == nullptr) return nullptr;
-    int compare = (key - x->key);
-    if(compare < 0) x->left = delNode(x->left, key);
-    else if(compare > 0) x->right = delNode(x->right, key);
-    else {
-        if(x->right == nullptr) return x->left;
-        if(x->left == nullptr) return x->right;
+BST<Key,Value>::rotateRight(shared_ptr<Node> x) {
+    // Takes a node that has red link on it's left side
+    auto r = x->left;
+    x->left = r->right;
+    r->right = x;
+    r->color = x->color;
+    x->color = RED;
+    return r;
+}
 
-        auto t = x;
-        x = minimum(t->right);
-        x->right = delMininum(x->right);
-        x->left = t->left;
-    }
-    x->count = 1 + size(x->left) + size(x->right);
-    return x;
+template <typename Key, typename Value>
+void BST<Key,Value>::flipColor(shared_ptr<Node> x) {
+    assert(!isRed(x));
+    assert(isRed(x->left));
+    assert(isRed(x->right));
+    
+    x->color = RED;
+    x->left->color = BLACK;
+    x->right->color = BLACK;
 }
