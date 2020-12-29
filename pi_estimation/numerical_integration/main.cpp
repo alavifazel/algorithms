@@ -19,7 +19,7 @@ double integrate(std::function<double(double)> f,
 int main() {
 	auto f = [](double x){ return sqrt(1 - x*x); };
 	cout.precision(40);
-	for(size_t i = 0; i < 1'000'000; i+=10) {
+	for(size_t i = 0; i < 1'000'000; i+=1000) {
 		double circleArea = 2*integrate(f, -1, 1, i);
 		cout << circleArea << '\n';
 	}
