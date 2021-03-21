@@ -1,10 +1,15 @@
 /* Graph implementation with Adjacent list (including connected compnents ranking)
  * Example input:
- *  5 3
- *  3 2
- *  1 2
- *  4 1
- *  # of connections: 2
+	6 6
+	1 2
+	2 3
+	3 4
+	4 5
+	5 6
+	2 3
+	1 6
+	s
+	1	2	3	4	5	6	
  */
 
 #include <iostream>
@@ -65,41 +70,45 @@ public:
 	}
 
 	// Uses BFS
-	int shortestPath(int srcNode, int destNode) {
-	    srcNode -= 1;
-	    destNode -= 1;
-        vector<bool> visited(numOfNodes, false);
+	vector<int> shortestPath(int srcNode, int destNode) {
+		srcNode -= 1;
+		destNode -= 1;
+		vector<bool> visited(numOfNodes, false);
 
-        // The following vector keeps track of the parent of each node
-        vector<int> parents(numOfNodes, -1);
-        queue<int> q;
-        visited[srcNode] = true;
-        q.push(srcNode);
-        while(!q.empty()) {
-            int tmpNode = q.front();
-            q.pop();
-            for(int neighboringNode: list[tmpNode]) {
-                if(!visited[neighboringNode]) {
-                    q.push(neighboringNode);
-                    visited[neighboringNode] = true;
-                    parents[neighboringNode] = tmpNode;
+		// The following vector keeps track of the parent of each node
+		vector<int> parents(numOfNodes, -1);
+		queue<int> q;
+		visited[srcNode] = true;
+		q.push(srcNode);
+		while(!q.empty()) {
+		    int tmpNode = q.front();
+		    q.pop();
+		    for(int neighboringNode: list[tmpNode]) {
+		        if(!visited[neighboringNode]) {
+		            q.push(neighboringNode);
+		            visited[neighboringNode] = true;
+		            parents[neighboringNode] = tmpNode;
 
-                    if(neighboringNode == destNode) {
-                        std::cout << "s\n";
+		            if(neighboringNode == destNode) {
+		                std::cout << "s\n";
 
-                        vector<int> tmpVec(0);
-                        for(int i = neighboringNode; i != -1; i = parents[i]){
+				// Shortest Path Vector
+		                vector<int> SPVec(0);
+		                for(int i = neighboringNode; i != -1; i = parents[i]){
 
-                            tmpVec.push_back(i);
-                        }
+		                    SPVec.push_back(i + 1);
+		                }
 
-                        if(tmpVec.size() == 0)
-                            return -1;
-                        return tmpVec.size() - 1;
-                    }
-                }
-            }
-        }
+				// Inverting vector elements
+				vector<int> invertedSPVec;
+				for(int i = 0; i < SPVec.size(); i++) {
+					invertedSPVec.push_back(SPVec[SPVec.size() - 1 - i]);
+				}
+		                return invertedSPVec;
+		            }
+		        }
+		    }
+		}
 	}
 
     void addEdge(int v, int w) {
@@ -136,6 +145,10 @@ int main() {
         G.addEdge(x, y);
     }
   }
+    auto shortestPath = G.shortestPath(sNode, dNode);
+    for(int i = 0; i < shortestPath.size(); i++) {
+        std::cout << shortestPath[i] << "\t";
+    }
+    std::cout << "\n";
 
-   std::cout << G.shortestPath(sNode, dNode) << std::endl;
 }
