@@ -4,7 +4,6 @@
  * Description: Lookups take a constant time but pushing and popping element takes N steps in the worst case (when doubling and halving).
  * However the "Amortized" analysis of this algorithm is O(1).
  * To have guarantee for relatively fast insertion/deletion use linked-list implementaiton.
- * But in general resizing array is faster.
  *
 */
 
@@ -14,91 +13,104 @@
 #include <string.h>
 
 typedef struct {
-	int *data;
-	int lastIndex, capacity;
+    int *data;
+    int top_index;
+    int capacity;
 } Stack;
 
-void StackInit(Stack *s, int initialCapacity){
-	if(initialCapacity > 0) {
-		s->data = (int *) malloc(initialCapacity * sizeof(int));
-		s->lastIndex = 0;
-		s->capacity = initialCapacity;
-		memset(s->data, 0, s->capacity);
-	} else {
-	        fprintf(stderr, "Initial capacity should be positive!\n");
-	}
+void stack_init(Stack *s, int initial_capacity) {
+    if (initial_capacity > 0) {
+        s->data = (int *) malloc(initial_capacity * sizeof(int));
+        s->top_index = 0;
+        s->capacity = initial_capacity;
+        memset(s->data, 0, s->capacity * sizeof(int));
+    } else {
+        fprintf(stderr, "Initial capacity should be positive!\n");
+        s->data = NULL;
+        s->top_index = 0;
+        s->capacity = 0;
+    }
 }
 
-void StackFree(Stack *s) {
-	free(s->data);
-	s->lastIndex = 0;
+void stack_free(Stack *s) {
+    free(s->data);
+    s->data = NULL;
+    s->top_index = 0;
+    s->capacity = 0;
 }
 
-void StackPush(Stack *s, int key) {
-	if(s->lastIndex != s->capacity) {
-		s->lastIndex++;
-		s->data[s->lastIndex] = key;
-	}
-	else {
-		/* These lines should have been ideally in a private method named "resize".
-		 * Since C has no such encapsulation, publicly defining these
-		 * Lines into a public function could lead to errors.
-		 * In other words, only StackPush and StackPop should be able to the data capacity not the users themselves.
-		 */
-		int *tmp = realloc(s->data, s->capacity * 2);
-		if(tmp) {
-			s->capacity *= 2;
-			s->data = tmp;
-			s->lastIndex++;
-			s->data[s->lastIndex] = key;
-		} else {
-		      fprintf(stderr, "Can't inrease stack array size!\n");
-		}
-	}
+void stack_push(Stack *s, int key) {
+    if (s->top_index == s->capacity) {
+        int *tmp = realloc(s->data, s->capacity * 2 * sizeof(int));
+        if (tmp) {
+            s->capacity *= 2;
+            s->data = tmp;
+        } else {
+            fprintf(stderr, "Can't increase stack array size!\n");
+            return;
+        }
+    }
+
+    s->data[s->top_index] = key;
+    s->top_index++;
 }
 
-int StackPop(Stack *s) {
-	int lastData = s->data[s->lastIndex];
-	s->data[s->lastIndex] = 0;
-	s->lastIndex--;
+int stack_pop(Stack *s) {
+    if (s->top_index == 0) {
+        return -1;
+    }
 
-	// Dividing by 4 prevents "thrashing"
-	if(s->lastIndex < s->capacity / 4) {
-		int *tmp = realloc(s->data, s->capacity / 2);
-		if(tmp) {
-			s->capacity /= 2;
-			s->data = tmp;
-			return lastData;
-		} else {
-		      fprintf(stderr, "Can't decrease stack array size!\n");
-		}
-	}
+    s->top_index--;
+    int lastData = s->data[s->top_index];
+    s->data[s->top_index] = 0;
+
+    // Avoid shrinking below 4 capacity
+    if (s->capacity > 4 && s->top_index < s->capacity / 4) {
+        int new_capacity = s->capacity / 2;
+        int *tmp = realloc(s->data, new_capacity * sizeof(int));
+        if (tmp) {
+            s->capacity = new_capacity;
+            s->data = tmp;
+        } else {
+            fprintf(stderr, "Can't decrease stack array size!\n");
+        }
+    }
+
+    return lastData;
 }
 
-bool StackIsEmpty(Stack *s) {
-	return s->lastIndex == 1; 
+int stack_top(Stack *s) {
+    if (s->top_index == 0) {
+        fprintf(stderr, "Stack is empty!\n");
+        return -1;
+    }
+    return s->data[s->top_index - 1];
 }
 
-int StackSize(Stack *s) {
-	return s->lastIndex;
+bool stack_is_empty(Stack *s) {
+    return s->top_index == 0;
 }
 
-int main() { 
+int stack_size(Stack *s) {
+    return s->top_index;
+}
+
+int main(void) { 
 	Stack s;
-	StackInit(&s, 1);
-	StackPush(&s, 400);
-	StackPush(&s, 42);
-	StackPush(&s, 123123);
-	printf("%d\t%d\n",s.capacity, s.data[s.lastIndex]);
+	stack_init(&s, 1);
+	stack_push(&s, 400);
+	stack_push(&s, 42);
+	stack_push(&s, 123123);
 	
-	StackPop(&s);
-	printf("%d\t%d\n",s.capacity, s.data[s.lastIndex]);
-
-	StackPop(&s);
-	printf("%d\t%d\n",s.capacity, s.data[s.lastIndex]);
-
-	StackPop(&s);
-	printf("%d\t%d\n",s.capacity, s.data[s.lastIndex]);
+	printf("%d\t%d\n", stack_size(&s), stack_top(&s));
+	stack_pop(&s);
+	printf("%d\t%d\n", stack_size(&s), stack_top(&s));
+	stack_pop(&s);
+	printf("%d\t%d\n", stack_size(&s), stack_top(&s));
+	stack_pop(&s);
+	printf("%d\t%d\n", stack_size(&s), stack_top(&s));
 	
-	StackFree(&s);
+	stack_free(&s);
+	
+	return 0;
 }
